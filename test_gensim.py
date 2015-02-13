@@ -1,19 +1,21 @@
 import logging, os, gensim
+from collections import defaultdict
+import re
+
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-
+directory = './dataset/train'
 class MySentences(object):
-	def __init__(self,dirname):
-		self.dirname = dirname
 	def __iter__(self):
-		for line in open(self.dirname+'/dataset.txt'):
-			# assume there's one document per line, tokens separated by whitespace
-			yield line.lower().split()
+		for filename in os.listdir(directory):
+			data = open(directory+'/'+filename)
+			for line in data:
+				yield line.split()
 
-#sentences = MySentences('./dataset/')
-#model = gensim.models.Word2Vec(sentences)
-#model.save('./mymodel')
+sentences = MySentences()
+model = gensim.models.Word2Vec(sentences)
+model.save('./mymodel')
 model = gensim.models.Word2Vec.load('./mymodel')
-
+print model
 while 1:
 	print """
 	1. for word similarity
@@ -31,5 +33,3 @@ while 1:
 		print model.similarity(s[0], s[1])
 	if n == '2':
 		print model.most_similar(positive=[s[2], s[1]], negative=[s[0]])
-		
-
