@@ -11,16 +11,15 @@ def text_rank(sentences,threshold,damping_factor):
 
 	for i in range(num_sentences):
 		for j in range(i,num_sentences):
-			similarity_matrix[i][j] = similarity_obj.get_sentence_similarity(sentences[i],sentences[j])
+			similarity_matrix[i][j] = max(0.0, similarity_obj.get_sentence_similarity(sentences[i],sentences[j]))
 			similarity_matrix[j][i] = similarity_matrix[i][j]
-			dissimilarity_matrix[i][j] = -similarity_matrix[i][j]
-			dissimilarity_matrix[j][i] = -similarity_matrix[i][j]
+			dissimilarity_matrix[i][j] = 1-similarity_matrix[i][j]
+			dissimilarity_matrix[j][i] = 1-similarity_matrix[i][j]
 
 
-	print similarity_matrix
-	print '\n'
-	print '\n'
-	print dissimilarity_matrix
+	#print similarity_matrix
+	#print '\n'
+	#print dissimilarity_matrix
 
 	temp_scores = [initial_score for x in range(num_sentences)] # temp scores assigned to be 0
 	minimumChange = True
