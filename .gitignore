@@ -1,4 +1,6 @@
+./dataset2
 ./dataset/test/
 ./dataset/train/
-vocab.txt
-idf.txt
+./vocab.txt
+./idf.txt
+./wordSimilarityModel
