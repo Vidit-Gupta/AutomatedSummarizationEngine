@@ -3,6 +3,14 @@ from bs4 import BeautifulSoup
 
 raw = open('./temp/combinedRaw.txt', 'w')
 processed = open('./temp/combinedProcessed.txt', 'w')
+completeFile = open('./temp/summaryXML.txt', 'r').read()
+summaryFile = open('./SummarizationRouge/reference/news1_reference1.txt', 'w')
+soup = BeautifulSoup(completeFile)
+for node in soup.findAll('s'):
+	text = node.text.replace('\n','')
+	text = text.strip()
+	summaryFile.write(text+'\n')
+
 for filename in os.listdir(sys.argv[1]):
 	data = open(sys.argv[1]+'/'+filename, 'r').read()
 	soup = BeautifulSoup(data)
@@ -20,3 +28,4 @@ for filename in os.listdir(sys.argv[1]):
 			
 raw.close()
 processed.close()
+summaryFile.close()

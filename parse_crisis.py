@@ -9,7 +9,7 @@ testCount = min(100, totalFiles*1/100)
 fileNumber = 0
 test = set(random.sample(list(xrange(totalFiles)), testCount))
 
-for root, dirs, files in os.walk("."):
+for root, dirs, files in os.walk("./dataset"):
     # path = root.split('/')
     for file_name in files:
         match = re.search(".cont",file_name)
@@ -18,9 +18,9 @@ for root, dirs, files in os.walk("."):
         	fileNumber+=1
         	sentences = open(filePath,'r').readlines()
         	if fileNumber in test:
-        		newFile = open('./test/'+str(fileNumber),'w')
+        		newFile = open('./dataset/test/'+str(fileNumber)+'.txt','w')
         	else:
-        		newFile = open('./train/'+str(fileNumber),'w')
+        		newFile = open('./dataset/train/'+str(fileNumber)+'.txt','w')
         	for sentence in sentences:
 				sentence = sentence.replace('.', '')
 				sentence = re.sub("&apos;","'",sentence)

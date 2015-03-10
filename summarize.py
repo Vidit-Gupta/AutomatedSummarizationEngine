@@ -2,6 +2,7 @@ import sys, math, operator
 from text_rank import text_rank
 #from evaluate import evaluate
 from createSummaryFile import createSummaryFile
+from rouge_evaluate import rouge_evaluate
 
 
 # Function to get sentece with max score that has not been selected so far
@@ -88,13 +89,14 @@ for alpha in range(1,10):
 			gamma /= 10.0
 			indicesSelected = summarize(alpha, beta, gamma, False)
 			createSummaryFile(indicesSelected, './temp/combinedRaw.txt')
+			evaluationResults  = rouge_evaluate('./rouge2.0-distribution/')
 			#evaluationResults = evaluate(indicesSelected, './temp/actualSummary.txt', './temp/combinedRaw.txt')
 			#print evaluationResults[0],evaluationResults[1],evaluationResults[2]
-			#if(evaluationResults[2] >= mxF1):
-			#	mxF1 	  = evaluationResults[2]
-			#	alphaStar = alpha
-			#	betaStar  = beta
-			#	gammaStar = gamma
+			if(evaluationResults >= mxF1):
+				mxF1 	  = evaluationResults
+				alphaStar = alpha
+				betaStar  = beta
+				gammaStar = gamma
 #summarize(alphaStar, betaStar, gammaStar, True)
-#print alphaStar, betaStar, gammaStar
-#print mxF1
+print alphaStar, betaStar, gammaStar
+print mxF1

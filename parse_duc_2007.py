@@ -26,7 +26,7 @@ for root, dirs, files in os.walk("./dataset/duc_2007"):
 					text = text.replace('\n', '')
 					text = text.replace('.', '')
 					text = re.sub("[^\w\s]|_","", text)
-					text = re.sub(' _',' ',text)
+					text = re.sub(' +',' ',text)
 					text = text.lower()
 					textdata.write(text+'\n')
 			textdata.close()
