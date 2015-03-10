@@ -14,4 +14,3 @@ def rouge_func():
 	F_SCORE = float(output_file[1].split(",")[index])
 	return F_SCORE
 	
-rouge_func()
