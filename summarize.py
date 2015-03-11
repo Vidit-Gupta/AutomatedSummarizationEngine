@@ -51,6 +51,7 @@ def summarize(alpha, beta, gamma, showSummary):
 		if showSummary is True:
 			print sentence[0]
 			print '\n'
+	print indices
 	return indices
 
 #########
@@ -72,7 +73,7 @@ sentences = map(lambda x: x.strip(), sentences)
 
 totalSentences = len(sentences)
 #print totalSentences
-scoresAndDissimilarity = text_rank(sentences, 0.05, 0.85)
+scoresAndDissimilarity = text_rank(sentences, 0.1, 0.85)
 scores 				   = scoresAndDissimilarity[0]
 dissimilarity 		   = scoresAndDissimilarity[1]
 
@@ -80,12 +81,12 @@ dissimilarity 		   = scoresAndDissimilarity[1]
 sentencesToSelect = int(math.ceil(0.25*totalSentences))
 sentencesToSelect = 10
 mxF1 			  = -1.0
-
-for alpha in range(1,10):
+optimal = []
+for alpha in range(0,11):
 	alpha /= 10.0
-	for beta in range(1,9):
+	for beta in range(1,10):
 		beta = 1+beta/10.0
-		for gamma in range(1,10):
+		for gamma in range(0,11):
 			gamma /= 10.0
 			indicesSelected = summarize(alpha, beta, gamma, False)
 			createSummaryFile(indicesSelected, './temp/combinedRaw.txt')
@@ -93,10 +94,16 @@ for alpha in range(1,10):
 			#evaluationResults = evaluate(indicesSelected, './temp/actualSummary.txt', './temp/combinedRaw.txt')
 			#print evaluationResults[0],evaluationResults[1],evaluationResults[2]
 			if(evaluationResults >= mxF1):
+				if(evaluationResults > mxF1):
+					optimal = []
+				optimal.append([alpha, beta, gamma])
 				mxF1 	  = evaluationResults
 				alphaStar = alpha
 				betaStar  = beta
 				gammaStar = gamma
-#summarize(alphaStar, betaStar, gammaStar, True)
+indicesSelected = summarize(alphaStar, betaStar, gammaStar, True)
+createSummaryFile(indicesSelected, './temp/combinedRaw.txt')
 print alphaStar, betaStar, gammaStar
 print mxF1
+for lis in optimal:
+	print lis
