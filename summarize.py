@@ -90,24 +90,26 @@ for gamma in range(0,11):
 					#gamma /= 10.0
 
 		indicesSelected = summarize(alpha, beta, gamma, False)
-		createSummaryFile(indicesSelected, './temp/combinedRaw'+str(articleNumber)+'.txt')
-		evaluationResults  = rouge_evaluate('./rouge2.0-distribution/')
+		createSummaryFile(indicesSelected, './temp/combinedRaw'+str(articleNumber)+'.txt', articleNumber)
+		#evaluationResults  = rouge_evaluate('./rouge2.0-distribution/')
 		#evaluationResults = evaluate(indicesSelected, './temp/actualSummary.txt', './temp/combinedRaw.txt')
 		#print evaluationResults[0],evaluationResults[1],evaluationResults[2]
-		if(evaluationResults >= mxF1):
-			if(evaluationResults > mxF1):
-				optimal = []
-			optimal.append([alpha, beta, gamma])
-			mxF1 	  = evaluationResults
-			alphaStar = alpha
-			betaStar  = beta
-			gammaStar = gamma
+		#if(evaluationResults >= mxF1):
+		#	if(evaluationResults > mxF1):
+		#		optimal = []
+		#	optimal.append([alpha, beta, gamma])
+		#	mxF1 	  = evaluationResults
+		#	alphaStar = alpha
+		#	betaStar  = beta
+		#	gammaStar = gamma
+		
 		#indicesSelected = summarize(alphaStar, betaStar, gammaStar, True)
 		#createSummaryFile(indicesSelected, './temp/combinedRaw.txt')
 		#print alphaStar, betaStar, gammaStar
-		print '------------------------'
-		print 'article ', articleNumber
-		print mxF1
-		for lis in optimal:
-			print lis
-		print '------------------------'
+	evaluationResults  = rouge_evaluate('./rouge2.0-distribution/')
+	print '------------------------'
+	print 'gamma: ', gamma
+	print evaluationResults
+	#for lis in optimal:
+	#	print lis
+	print '------------------------' + '\n'
