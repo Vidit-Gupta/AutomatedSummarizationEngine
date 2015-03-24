@@ -57,53 +57,57 @@ def summarize(alpha, beta, gamma, showSummary):
 #########
 # Main
 #########
+scoresAndDissimilarityMap = {}
+for gamma in range(0,11):
+	gamma /= 10.0
+	for articleNumber in range(1, 60):
+	# Getting data
+		article = open('./temp/combinedProcessed'+str(articleNumber)+'.txt', 'r')
 
-# Getting data
-directory = "./dataset4/test"
-#article   = open(directory+'/'+sys.argv[1], 'r')
-article = open('./temp/combinedProcessed.txt', 'r')
-#alpha = float(sys.argv[2])
-#beta = float(sys.argv[3])
-#gamma = float(sys.argv[4])
+		sentences = []
+		for sentence in article:
+			sentences.append(sentence)
+		sentences = map(lambda x: x.strip(), sentences)
 
-sentences = []
-for sentence in article:
-	sentences.append(sentence)
-sentences = map(lambda x: x.strip(), sentences)
+		totalSentences = len(sentences)
+		if articleNumber not in scoresAndDissimilarityMap:
+			scoresAndDissimilarityMap[articleNumber] = text_rank(sentences, 0.1, 0.85)
+		scoresAndDissimilarity = scoresAndDissimilarityMap[articleNumber]
+		scores 				   = scoresAndDissimilarity[0]
+		dissimilarity 		   = scoresAndDissimilarity[1]
 
-totalSentences = len(sentences)
-#print totalSentences
-scoresAndDissimilarity = text_rank(sentences, 0.1, 0.85)
-scores 				   = scoresAndDissimilarity[0]
-dissimilarity 		   = scoresAndDissimilarity[1]
+		# Taking 1/4th senteces for summarization
+		sentencesToSelect = int(math.ceil(0.25*totalSentences))
+		sentencesToSelect = 10
+		mxF1 			  = -1.0
+		optimal = []
+		beta = 1.5; alpha = 0.7
+		#for alpha in range(0,11):
+		#	alpha /= 10.0
+			#for beta in range(1,10):
+			#	beta = 1+beta/10.0
+				#for gamma in range(0,11):
+					#gamma /= 10.0
 
-# Taking 1/4th senteces for summarization
-sentencesToSelect = int(math.ceil(0.25*totalSentences))
-sentencesToSelect = 10
-mxF1 			  = -1.0
-optimal = []
-for alpha in range(0,11):
-	alpha /= 10.0
-	for beta in range(1,10):
-		beta = 1+beta/10.0
-		for gamma in range(0,11):
-			gamma /= 10.0
-			indicesSelected = summarize(alpha, beta, gamma, False)
-			createSummaryFile(indicesSelected, './temp/combinedRaw.txt')
-			evaluationResults  = rouge_evaluate('./rouge2.0-distribution/')
-			#evaluationResults = evaluate(indicesSelected, './temp/actualSummary.txt', './temp/combinedRaw.txt')
-			#print evaluationResults[0],evaluationResults[1],evaluationResults[2]
-			if(evaluationResults >= mxF1):
-				if(evaluationResults > mxF1):
-					optimal = []
-				optimal.append([alpha, beta, gamma])
-				mxF1 	  = evaluationResults
-				alphaStar = alpha
-				betaStar  = beta
-				gammaStar = gamma
-indicesSelected = summarize(alphaStar, betaStar, gammaStar, True)
-createSummaryFile(indicesSelected, './temp/combinedRaw.txt')
-print alphaStar, betaStar, gammaStar
-print mxF1
-for lis in optimal:
-	print lis
+		indicesSelected = summarize(alpha, beta, gamma, False)
+		createSummaryFile(indicesSelected, './temp/combinedRaw'+str(articleNumber)+'.txt')
+		evaluationResults  = rouge_evaluate('./rouge2.0-distribution/')
+		#evaluationResults = evaluate(indicesSelected, './temp/actualSummary.txt', './temp/combinedRaw.txt')
+		#print evaluationResults[0],evaluationResults[1],evaluationResults[2]
+		if(evaluationResults >= mxF1):
+			if(evaluationResults > mxF1):
+				optimal = []
+			optimal.append([alpha, beta, gamma])
+			mxF1 	  = evaluationResults
+			alphaStar = alpha
+			betaStar  = beta
+			gammaStar = gamma
+		#indicesSelected = summarize(alphaStar, betaStar, gammaStar, True)
+		#createSummaryFile(indicesSelected, './temp/combinedRaw.txt')
+		#print alphaStar, betaStar, gammaStar
+		print '------------------------'
+		print 'article ', articleNumber
+		print mxF1
+		for lis in optimal:
+			print lis
+		print '------------------------'
