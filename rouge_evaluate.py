@@ -1,9 +1,8 @@
 from subprocess import call
 
-def rouge_func():
-	PATH = "" # output file path
-	ROUGE_PATH = ""
-	call(["java", "-jar",ROUGE_PATH + "rouge2.0.jar"])
+def rouge_evaluate(resultFilePath):
+	PATH = resultFilePath # output file path
+	call(["java", "-jar", "-Drouge.prop="+PATH+"rouge.properties",PATH + "rouge2.0.jar"])
 	output_file = open(PATH+"results.csv",'r').readlines()
 	line1 = output_file[0].split(",")
 	index = 0

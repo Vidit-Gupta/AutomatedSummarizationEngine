@@ -26,6 +26,7 @@ for node in soup.findAll('text'):
 		sentence = sentence.replace('.', '')
 		sentence = re.sub("&apos;","'",sentence)
 		sentence = re.sub("[^\w\s']|_","",sentence)
+		sentence = re.sub(' +',' ',sentence)
 		sentence = sentence.lower()
 		textdata.write(sentence+'\n')
 	textdata.close()
