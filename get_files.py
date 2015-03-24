@@ -1,0 +1,24 @@
+import os, re
+FOLDER_PATH = "./summaries"
+OUTPUT_PATH = "./output"
+all_folders = [f for f in os.listdir(FOLDER_PATH) if re.match(r'd[0-9]+.*', f)]
+# print all_folders
+d = {}
+count = 0
+for i in range(len(all_folders)):
+	folder = all_folders[i]
+	print folder
+	number = int(folder[1:][:-2])
+	# print number
+	if number in d.keys():
+		d[number]+=1
+	else:
+		d[number]=1
+		count+=1
+	files = os.listdir(FOLDER_PATH + "/" +folder)
+	if "200e" in files:
+		inp = open(FOLDER_PATH + "/" + folder + "/200e",'r').readlines() #some dont have 200e
+		inp = ''.join(inp)
+		out = open(OUTPUT_PATH+ "/news" + str(count) + "summarizeXML" + str(d[number]),'w').write(inp)
+	else:
+		d[number]-=1
