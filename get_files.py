@@ -1,6 +1,6 @@
 import os, re
 FOLDER_PATH = "./summaries"
-OUTPUT_PATH = "./output"
+OUTPUT_PATH = "./temp"
 all_folders = [f for f in os.listdir(FOLDER_PATH) if re.match(r'd[0-9]+.*', f)]
 # print all_folders
 d = {}
@@ -18,7 +18,8 @@ for i in range(len(all_folders)):
 	files = os.listdir(FOLDER_PATH + "/" +folder)
 	if "200e" in files:
 		inp = open(FOLDER_PATH + "/" + folder + "/200e",'r').readlines() #some dont have 200e
-		inp = ''.join(inp)
-		out = open(OUTPUT_PATH+ "/news" + str(count) + "summarizeXML" + str(d[number]),'w').write(inp)
+		inp = map(lambda x: x.strip().encode('ascii', 'ignore').rstrip(), inp)
+		inp = '\n'.join(inp)
+		out = open(OUTPUT_PATH+ "/news" + str(count) + "summarizeXML" + str(d[number]) + '.txt','w').write(inp)
 	else:
 		d[number]-=1
