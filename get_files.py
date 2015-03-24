@@ -7,7 +7,6 @@ d = {}
 count = 0
 for i in range(len(all_folders)):
 	folder = all_folders[i]
-	print folder
 	number = int(folder[1:][:-2])
 	# print number
 	if number in d.keys():
@@ -20,6 +19,6 @@ for i in range(len(all_folders)):
 		inp = open(FOLDER_PATH + "/" + folder + "/200e",'r').readlines() #some dont have 200e
 		inp = map(lambda x: x.strip().encode('ascii', 'ignore').rstrip(), inp)
 		inp = '\n'.join(inp)
-		out = open(OUTPUT_PATH+ "/news" + str(count) + "summarizeXML" + str(d[number]) + '.txt','w').write(inp)
+		out = open(OUTPUT_PATH+ "/summarize"+str(count)+"XML" + str(d[number]) + '.txt','w').write(inp)
 	else:
 		d[number]-=1
