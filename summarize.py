@@ -1,4 +1,4 @@
-import sys, math, operator
+import sys, math, operator, pickle, os
 from text_rank import text_rank
 #from evaluate import evaluate
 from createSummaryFile import createSummaryFile
@@ -16,7 +16,6 @@ def getMaximumAvailable(selected, currentScore):
 				mxidx = i
 	return mxidx
 
-
 def summarize(alpha, beta, gamma, showSummary):
 	# Array initializations
 	currentScore 	  = [0]*totalSentences
@@ -30,9 +29,10 @@ def summarize(alpha, beta, gamma, showSummary):
 	#Selecting the sentences
 	for k in range(sentencesToSelect):
 		for i in range(totalSentences):
-			minDissimilarityScore = -1.0 
+			minDissimilarityScore = 1.0 
 			for sentence in selectedSentences:
 				minDissimilarityScore = min(minDissimilarityScore, dissimilarity[i][sentence[1]])
+			
 			minDissimilarityScore   = max(minDissimilarityScore, 0.0)
 			chronologicalImportance = (beta**(-i))/chronologicalImportanceNormalization
 			#print chronologicalImportance, scores[i]
@@ -57,9 +57,9 @@ def summarize(alpha, beta, gamma, showSummary):
 #########
 # Main
 #########
-scoresAndDissimilarityMap = {}
-for gamma in range(0,11):
-	gamma /= 10.0
+
+for alpha in range(0,11):
+	alpha /= 10.0
 	for articleNumber in range(1, 60):
 	# Getting data
 		article = open('./temp/combinedProcessed'+str(articleNumber)+'.txt', 'r')
@@ -70,24 +70,26 @@ for gamma in range(0,11):
 		sentences = map(lambda x: x.strip(), sentences)
 
 		totalSentences = len(sentences)
-		if articleNumber not in scoresAndDissimilarityMap:
-			scoresAndDissimilarityMap[articleNumber] = text_rank(sentences, 0.1, 0.85)
-		scoresAndDissimilarity = scoresAndDissimilarityMap[articleNumber]
-		scores 				   = scoresAndDissimilarity[0]
-		dissimilarity 		   = scoresAndDissimilarity[1]
+		"""
+		scoresAndDissimilarity = text_rank(sentences, 0.1, 0.85)
+		scores 				= scoresAndDissimilarity[0]
+		dissimilarity 		    = scoresAndDissimilarity[1]
+		pickle_file = open('./textRankResults/score'+str(articleNumber)+'.p', 'wb')
+		pickle.dump(scores, pickle_file)
+		pickle_file.close()
+		pickle_file = open('./textRankResults/dissimilarity'+str(articleNumber)+'.p', 'wb')
+		pickle.dump(dissimilarity, pickle_file)
+		pickle_file.close()
+		"""
+		scores = pickle.load(open('./textRankResults/score' + str(articleNumber)+'.p'))
+		dissimilarity = pickle.load(open('./textRankResults/dissimilarity' + str(articleNumber)+'.p'))
 
 		# Taking 1/4th senteces for summarization
 		sentencesToSelect = int(math.ceil(0.25*totalSentences))
 		sentencesToSelect = 10
 		mxF1 			  = -1.0
 		optimal = []
-		beta = 1.5; alpha = 0.7
-		#for alpha in range(0,11):
-		#	alpha /= 10.0
-			#for beta in range(1,10):
-			#	beta = 1+beta/10.0
-				#for gamma in range(0,11):
-					#gamma /= 10.0
+		gamma = 0.2; beta = 1.5
 
 		indicesSelected = summarize(alpha, beta, gamma, False)
 		createSummaryFile(indicesSelected, './temp/combinedRaw'+str(articleNumber)+'.txt', articleNumber)
@@ -108,8 +110,18 @@ for gamma in range(0,11):
 		#print alphaStar, betaStar, gammaStar
 	evaluationResults  = rouge_evaluate('./rouge2.0-distribution/')
 	print '------------------------'
-	print 'gamma: ', gamma
+	print 'alpha: ' + str(alpha)
 	print evaluationResults
-	#for lis in optimal:
-	#	print lis
 	print '------------------------' + '\n'
+
+# The notifier function
+def notify(title, subtitle, message):
+    t = '-title {!r}'.format(title)
+    s = '-subtitle {!r}'.format(subtitle)
+    m = '-message {!r}'.format(message)
+    os.system('terminal-notifier {}'.format(' '.join([m, t, s])))
+
+# Calling the function
+notify(title    = 'AutomatedSummarization notification',
+       subtitle = 'with python',
+       message  = 'Summarization task has completed')

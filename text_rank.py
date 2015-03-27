@@ -34,6 +34,8 @@ def text_rank(sentences,threshold,damping_factor):
 				if j!=i:
 					for k in range(num_sentences):
 						edge_sum = edge_sum + similarity_matrix[j][k]
+					if edge_sum == 0:
+						edge_sum = 1
 					sum_val = sum_val + (1.0 * scores[j] * similarity_matrix[j][i])/edge_sum
 			
 			temp_scores[i] = (1-damping_factor) + (damping_factor * sum_val)
